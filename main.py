@@ -1,9 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 
-url = ""
-
-id="series_popup"
+id = "series_popup"
 
 show_name = input("please enter a show")
 
@@ -16,4 +14,3 @@ headers = {
 html = requests.get(url, headers)
 
 soup = BeautifulSoup(html.content, 'html.parser')
-

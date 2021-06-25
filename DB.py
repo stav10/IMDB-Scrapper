@@ -18,6 +18,9 @@ class LocalDb:
                         return record
         return None
 
+    def items_count(self):
+        return len(self.local_db)
+
     def find_many(self, query):
         self.refresh_db_data()
         results = []
@@ -164,3 +167,7 @@ class LocalDb:
     def save_to_db(self):
         with open(self.DB_PATH, "w") as f:
             json.dump(self.local_db, f)
+
+
+db = LocalDb('static/series.json')
+db.delete_one({"name": "The Legend of Korra"})
