@@ -70,12 +70,12 @@ class LocalDb:
         if query and update_line:
             command, new_field = next(iter(update_line.items()))
             command = command.split("$")[-1]
-            new_field_key, new_field_value = next(iter(new_field.items()))
-
+            new_keys, new_values = list(new_field.keys()), list(new_field.values())
             record = self.find_one(query)
-            if record and new_field_key in record.keys():
+            if record and set(record.keys()).issubset(new_keys):
                 if command == "set":
-                    record[new_field_key] = new_field_value
+                    for new_field_key, new_field_value in list(new_field.items()):
+                        record[new_field_key] = new_field_value
                     self.save_to_db()
                 if command == "push":
                     pass
@@ -168,6 +168,3 @@ class LocalDb:
         with open(self.DB_PATH, "w") as f:
             json.dump(self.local_db, f)
 
-
-db = LocalDb('static/series.json')
-db.delete_one({"name": "The Legend of Korra"})
