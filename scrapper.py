@@ -89,6 +89,6 @@ show_new_details = {'id': db.items_count() + 1, 'name': show['name'], 'imageUrl'
                     'imdbId': show['id'], 'seasons': show_series_data}
 if db_search_show:
     print(show['id'])
-    db.update_one({"imdbId": show['id']}, {"$set": {"seasons": show_series_data}})
+    db.update_one({"imdbId": show['id']}, {"$set": show_new_details})
 else:
     db.insert_one(show_new_details)
