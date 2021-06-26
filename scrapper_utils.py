@@ -10,18 +10,16 @@ headers = {
     "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36"
 }
 
-show = input("enter a show search: ")
-
-url = f"https://v2.sg.media-imdb.com/suggestion/{show[0]}/{show}.json"
-
-data = requests.get(url, headers=headers).json()['d']
-
 show_series_data = []
 
 
-def show_matches(show, index):
-    print(f"{index + 1}: {show['l']}")
-    return {"name": show['l'], "id": show['id'], 'imageUrl': show['i']['imageUrl'] if show.get('i') else None}
+def scrap_suggestion(show_name):
+    url = f"https://v2.sg.media-imdb.com/suggestion/{show_name[0]}/{show_name}.json"
+    data = requests.get(url, headers=headers).json()['d']
+    potential_matches = [show['l'] for show in data]
+    return potential_matches
+
+
 
 
 def get_show_name(imdb_show_name):
@@ -59,36 +57,32 @@ def parse_html(html_soup, season):
     return episodes
 
 
-print()
-
-potential_matches = [show_matches(data[i], i) for i in range(len(data))]
-
-show_index = int(input("\nplease enter your show number: ")) - 1
-show = potential_matches[show_index]
-
-print(show)
-show_url = f"https://www.imdb.com/title/{show['id']}/episodes/_ajax?season=1"
-req = requests.get(show_url, headers=headers)
-soup = BeautifulSoup(req.content, 'html.parser')
-html_seasons = soup.find("select", id="bySeason").find_all("option")
-num_of_seasons = int(html_seasons[-2]['value']) if int(html_seasons[-1]['value']) == -1 else int(html_seasons[-1]['value'])
-
-print(num_of_seasons)
-
-for i in range(num_of_seasons):
-    show_url = f"https://www.imdb.com/title/{show['id']}/episodes/_ajax?season={i + 1}"
-    req = requests.get(show_url, headers=headers)
-    if req.status_code == 200:
-        soup = BeautifulSoup(req.content, 'html.parser')
-        show_series_data.append({f"{i + 1}": parse_html(soup, i + 1)})
-    else:
-        break
-
-db_search_show = db.find_one({"imdbId": show['id']})
-show_new_details = {'id': db.items_count() + 1, 'name': show['name'], 'imageUrl': show['imageUrl'],
-                    'imdbId': show['id'], 'seasons': show_series_data}
-if db_search_show:
-    print(show['id'])
-    db.update_one({"imdbId": show['id']}, {"$set": show_new_details})
-else:
-    db.insert_one(show_new_details)
+# print()
+# show = {"nice": "nice"}
+# print(show)
+# show_url = f"https://www.imdb.com/title/{show['id']}/episodes/_ajax?season=1"
+# req = requests.get(show_url, headers=headers)
+# soup = BeautifulSoup(req.content, 'html.parser')
+# html_seasons = soup.find("select", id="bySeason").find_all("option")
+# num_of_seasons = int(html_seasons[-2]['value']) if int(html_seasons[-1]['value']) == -1 else int(
+#     html_seasons[-1]['value'])
+#
+# print(num_of_seasons)
+#
+# for i in range(num_of_seasons):
+#     show_url = f"https://www.imdb.com/title/{show['id']}/episodes/_ajax?season={i + 1}"
+#     req = requests.get(show_url, headers=headers)
+#     if req.status_code == 200:
+#         soup = BeautifulSoup(req.content, 'html.parser')
+#         show_series_data.append({f"{i + 1}": parse_html(soup, i + 1)})
+#     else:
+#         break
+#
+# db_search_show = db.find_one({"imdbId": show['id']})
+# show_new_details = {'id': db.items_count() + 1, 'name': show['name'], 'imageUrl': show['imageUrl'],
+#                     'imdbId': show['id'], 'seasons': show_series_data}
+# if db_search_show:
+#     print(show['id'])
+#     db.update_one({"imdbId": show['id']}, {"$set": show_new_details})
+# else:
+#     db.insert_one(show_new_details)

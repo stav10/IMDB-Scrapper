@@ -7,6 +7,9 @@ class LocalDb:
         self.DB_PATH = DB_PATH
         self.refresh_db_data()
 
+    def find_all(self):
+        return self.local_db
+
     def find_one(self, query):
         self.refresh_db_data()
         query = self.validate_json(query)
