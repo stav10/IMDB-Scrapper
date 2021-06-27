@@ -34,13 +34,13 @@ def get_show_name(imdb_show_name):
 
 
 def create_url(path, episodeNum):
-    if os.path.exists(path):
+    if os.path.exists(path) and os.path.isfile(path):
         files = os.listdir(path)
         for f in files:
             file_name, extension = f.split(".")
             if int(file_name) == int(episodeNum):
-                return f"{path}/{file_name}.{extension}"
-    return f"{path}/{episodeNum}.mp4"
+                return f"{path}/{file_name}/hls.m3u8"
+    return f"{path}/{episodeNum}/hls.m3u8"
 
 
 def parse_html(html_soup, season):

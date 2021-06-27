@@ -37,7 +37,7 @@ def create_url(path, episodeNum):
         for f in files:
             file_name, extension = f.split(".")
             if int(file_name) == int(episodeNum):
-                return f"{path}/{file_name}.{extension}"
+                return f"{path}/{file_name}/hls.m3u8"
 
 
 def parse_html(html_soup, season):
