@@ -1,13 +1,13 @@
 import os
 from streaming import create_m3u8
+from threading import Thread
 
-ffmpeg_path = "C:\\ffmpeg\\bin\\ffmpeg.exe"
-ffprove_path = "C:\\ffmpeg\\bin\\ffprobe.exe"
-os.environ['PATH'] += ':' + ffmpeg_path
+
 PATH = "static/shows"
 shows = os.listdir(PATH)
 
 numbers = "0123456789"
+
 
 for show in shows:
     SHOW_PATH = f"{PATH}/{show}"
@@ -25,7 +25,4 @@ for show in shows:
             NEW_PATH = f"{SEASON_PATH}/{j + 1}.{extention}"
             if not episode.isdigit() and not os.path.isfile(NEW_PATH):
                 os.rename(EPISODE_PATH, NEW_PATH)
-            m3u8_folder = f"{SEASON_PATH}/{j + 1}"
-            if not os.path.isdir(m3u8_folder):
-                os.mkdir(m3u8_folder)
-                create_m3u8(NEW_PATH, m3u8_folder)
+
