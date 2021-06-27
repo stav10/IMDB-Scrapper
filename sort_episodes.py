@@ -25,4 +25,7 @@ for show in shows:
             NEW_PATH = f"{SEASON_PATH}/{j + 1}.{extention}"
             if not episode.isdigit() and not os.path.isfile(NEW_PATH):
                 os.rename(EPISODE_PATH, NEW_PATH)
-
+            m3u8_folder = f"{SEASON_PATH}/{j + 1}"
+            if not os.path.isdir(m3u8_folder):
+                os.mkdir(m3u8_folder)
+                create_m3u8(NEW_PATH, m3u8_folder)
