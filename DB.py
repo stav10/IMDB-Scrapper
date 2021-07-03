@@ -171,3 +171,4 @@ class LocalDb:
         with open(self.DB_PATH, "w") as f:
             json.dump(self.local_db, f)
 
+
